@@ -70,14 +70,40 @@ function Header() {
 }
 
 function Menu() {
+  const numPizzas = pizzaData.length;
+  // const numPizzas = 0;
+
   return (
     <main className='menu'>
       <h2>Our menu</h2>
-      <Pizza />
-      <Pizza />
-      <Pizza />
-      <Pizza />
+
+      {numPizzas > 0 ? (
+        <ul className='pizzas'>
+          {pizzaData.map(pizza => {
+            return <Pizza pizzaObj={pizza} key={pizza.name} />;
+          })}
+        </ul>
+      ) : (
+        <p>We're still working on our menu. Please come back later.</p>
+      )}
     </main>
+  );
+}
+
+function Pizza(props) {
+  const { name, ingredients, photoName, price, soldOut } = props.pizzaObj;
+
+  if (soldOut) return null;
+
+  return (
+    <div className='pizza'>
+      <img src={photoName} alt={name} />
+      <div>
+        <h3>{name}</h3>
+        <p>{ingredients}</p>
+        <span>{price}</span>
+      </div>
+    </div>
   );
 }
 
@@ -94,21 +120,23 @@ function Footer() {
 
   return (
     <footer className='footer'>
-      {new Date().toLocaleTimeString()} We're currently open
+      {isOpen ? (
+        <div className='order'>
+          <p>
+            We're currently open until {closeHour}:00. Come visit us or order
+            online.
+          </p>
+          <button className='btn'>Order</button>
+        </div>
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
     </footer>
   );
   // This is what we'd have to do everytime without jsx
   // return React.createElement('footer', null, "We're currently open!");
-}
-
-function Pizza() {
-  return (
-    <div>
-      <img src='pizzas/spinaci.jpg' alt='Pizza Spinaci' />
-      <h3>Pizza Spinaci</h3>
-      <p>Tomato, mozarella, spinach, and ricotta cheese</p>
-    </div>
-  );
 }
 
 // This is how the index file is rendered from React version 18
