@@ -39,24 +39,55 @@ function Intro() {
   );
 }
 
+const skills = [
+  {
+    skill: 'Vue',
+    level: 'intermediate',
+    color: '#42b883',
+  },
+  {
+    skill: 'React',
+    level: 'beginner',
+    color: '#149eca',
+  },
+  {
+    skill: 'HTML and CSS',
+    level: 'intermediate',
+    color: '#2862e9',
+  },
+  {
+    skill: 'Javascript',
+    level: 'advanced',
+    color: '#efd81d',
+  },
+  {
+    skill: 'Git and Github',
+    level: 'intermediate',
+    color: '#e84d31',
+  },
+];
+
 function SkillList() {
   return (
     <div className='skill-list'>
-      <Skill skill='Vue' emoji='🥳' color='#42b883' />
-      <Skill skill='React' emoji='🤗' color='#149eca' />
-      <Skill skill='HTML+CSS' emoji='🙃' color='#2862e9' />
-      <Skill skill='Javascript' emoji='💪🏻' color='#efd81d' />
-      <Skill skill='Git and GitHub' emoji='🙂' color='#e84d31' />
+      {skills.map(eachSkill => {
+        return <Skill details={eachSkill} />;
+      })}
     </div>
   );
 }
 
-function Skill(props) {
-  const { skill = 'not defined', emoji, color } = props;
+function Skill({ details }) {
+  const { skill, level, color } = details;
+
   return (
     <div className='skill' style={{ backgroundColor: color }}>
       <span>{skill}</span>
-      <span>{emoji}</span>
+      <span>
+        {level === 'beginner' && '👶🏻'}
+        {level === 'intermediate' && '👍🏻'}
+        {level === 'advanced' && '💪🏻'}
+      </span>
     </div>
   );
 }

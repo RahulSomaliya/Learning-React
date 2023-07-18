@@ -74,34 +74,43 @@ function Menu() {
   // const numPizzas = 0;
 
   return (
-    <main className='menu'>
+    <div className='menu'>
       <h2>Our menu</h2>
 
       {numPizzas > 0 ? (
-        <ul className='pizzas'>
-          {pizzaData.map(pizza => {
-            return <Pizza pizzaObj={pizza} key={pizza.name} />;
-          })}
-        </ul>
+        // this is a react fragment - no parent component
+        // <></>
+        <React.Fragment key='anyUniqueKey'>
+          <p>
+            Authemtic Italian cuisine. 6 creative dishes to choose from. All
+            from our stone oven, all organic, all delicious.
+          </p>
+          <ul className='pizzas'>
+            {pizzaData.map(pizza => {
+              return <Pizza pizzaObj={pizza} key={pizza.name} />;
+            })}
+          </ul>
+        </React.Fragment>
       ) : (
         <p>We're still working on our menu. Please come back later.</p>
       )}
-    </main>
+    </div>
   );
 }
 
-function Pizza(props) {
-  const { name, ingredients, photoName, price, soldOut } = props.pizzaObj;
+function Pizza({ pizzaObj }) {
+  const { name, ingredients, photoName, price, soldOut } = pizzaObj;
 
-  if (soldOut) return null;
+  // if (soldOut) return null;
 
   return (
-    <div className='pizza'>
+    // <div className={soldOut ? 'sold-out' : 'pizza'}>
+    <div className={`pizza ${soldOut ? 'sold-out' : ''}`}>
       <img src={photoName} alt={name} />
       <div>
         <h3>{name}</h3>
         <p>{ingredients}</p>
-        <span>{price}</span>
+        <span>{soldOut ? 'SOLD OUT' : price}</span>
       </div>
     </div>
   );
@@ -121,13 +130,7 @@ function Footer() {
   return (
     <footer className='footer'>
       {isOpen ? (
-        <div className='order'>
-          <p>
-            We're currently open until {closeHour}:00. Come visit us or order
-            online.
-          </p>
-          <button className='btn'>Order</button>
-        </div>
+        <Order closeHour={closeHour} />
       ) : (
         <p>
           We're happy to welcome you between {openHour}:00 and {closeHour}:00.
@@ -137,6 +140,18 @@ function Footer() {
   );
   // This is what we'd have to do everytime without jsx
   // return React.createElement('footer', null, "We're currently open!");
+}
+
+function Order({ closeHour }) {
+  return (
+    <div className='order'>
+      <p>
+        We're currently open until {closeHour}:00. Come visit us or order
+        online.
+      </p>
+      <button className='btn'>Order</button>
+    </div>
+  );
 }
 
 // This is how the index file is rendered from React version 18
