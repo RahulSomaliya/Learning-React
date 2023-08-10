@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { KEY } from '../App';
 import Loader from './Loader';
 import StarRating from '../StarRating';
+import { useKey } from '../CustomHooks/useKey';
 
 export default function MovieDetails({
   selectedId,
@@ -13,6 +14,17 @@ export default function MovieDetails({
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState(
     watched?.find(movie => movie.imdbId === selectedId)?.userRating || ''
+  );
+
+  // this is going to preserve state changes of the starReview component, without any re-renders (this could be helpful to know how many times user decided to change his/her decision before finally adding it to watchedList)
+  const countRef = useRef([]);
+
+  useEffect(
+    function () {
+      if (!userRating) return;
+      countRef.current = [...countRef.current, userRating];
+    },
+    [userRating]
   );
 
   const isWatched = watched?.map(movies => movies.imdbId)?.includes(selectedId);
@@ -30,6 +42,9 @@ export default function MovieDetails({
     Genre: genre,
   } = movie;
 
+  // /* eslint-disable */
+  // if (imdbRating > 8) [isTop, setIsTop] = useState(true);
+
   function handleAdd() {
     const newWatchedMovie = {
       imdbId: selectedId,
@@ -39,25 +54,13 @@ export default function MovieDetails({
       imdbRating: Number(imdbRating),
       userRating: Number(userRating),
       runtime: Number(runtime.split(' ').at(0)),
+      previousRatingDecisions: countRef.current,
     };
     onAddWatched(newWatchedMovie);
     onCloseMovie();
   }
 
-  useEffect(
-    function () {
-      function callback(e) {
-        if (e.code === 'Escape') {
-          onCloseMovie();
-        }
-      }
-      document.addEventListener('keydown', callback);
-      return function () {
-        document.removeEventListener('keydown', callback);
-      };
-    },
-    [onCloseMovie]
-  );
+  useKey('Escape', onCloseMovie);
 
   useEffect(
     function () {
