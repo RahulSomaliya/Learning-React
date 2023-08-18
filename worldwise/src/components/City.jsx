@@ -21,8 +21,7 @@ function City() {
     function () {
       getCity(id);
     },
-    // TODO: PENDING
-    [id]
+    [id, getCity]
   );
 
   const { cityName, emoji, date, notes } = currentCity;
